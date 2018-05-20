@@ -1,9 +1,10 @@
+import React from 'react'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import rootReducer from './reducers'
-import App from './App'
+import rootReducer from '../redux/reducers'
+import App from '../components/App'
 
-const store = createStore(rootReucer)
+const store = createStore(rootReducer)
 
 const Index = () => (
   <Provider store={store}>
