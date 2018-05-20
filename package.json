@@ -1,0 +1,19 @@
+{
+  "name": "abstract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^6.0.3",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0"
+  }
+}
