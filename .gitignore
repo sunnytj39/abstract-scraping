@@ -1,4 +1,4 @@
 python/consts.py
 node_modules
 package-lock.json
-next
+.next
