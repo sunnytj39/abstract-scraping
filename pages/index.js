@@ -1,15 +1,30 @@
 import React from 'react'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import rootReducer from '../redux/reducers'
-import App from '../components/App'
+import {connect} from 'react-redux'
+import {startClock, serverRenderClock} from '../store'
+import Examples from '../components/examples'
 
-const store = createStore(rootReducer)
+class Index extends React.Component {
+  static getInitialProps ({ reduxStore, req }) {
+    const isServer = !!req
+    reduxStore.dispatch(serverRenderClock(isServer))
 
-const Index = () => (
-  <Provider store={store}>
-    <App />
-  </Provider>
-)
+    return {}
+  }
 
-export default Index
+  componentDidMount () {
+    const {dispatch} = this.props
+    this.timer = startClock(dispatch)
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.timer)
+  }
+
+  render () {
+    return (
+      <Examples />
+    )
+  }
+}
+
+export default connect()(Index)
