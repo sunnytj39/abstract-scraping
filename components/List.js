@@ -8,9 +8,8 @@ const List = ({list}) => (
   </div>
 )
 
-function mapStateToProps (state) {
-  const {list} = state
-  return {list}
-}
+const mapStateToProps = state => ({
+  list: state.list
+})
 
 export default connect(mapStateToProps)(List)

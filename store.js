@@ -3,7 +3,7 @@ import {composeWithDevTools } from 'redux-devtools-extension'
 
 const initialState = {
   inputText: 'initial text',
-  list: ['hello','redux']
+  list: ['hello', 'react' ,'redux']
 }
 
 // REDUCERS
@@ -22,13 +22,14 @@ export const reducer = (state = initialState, action) => {
 }
 
 // ACTIONS
-export const changeText = (inputText) => dispatch => {
-  return dispatch({ type: 'CHANGE_TEXT', inputText: inputText})
-}
+export const changeText = text => ({ 
+  type: 'CHANGE_TEXT',
+  inputText: text
+})
 
-export const addList = () => dispatch => {
-  return dispatch({ type: actionTypes.ADD_LIST })
-}
+export const addList = () => ({ 
+  type: 'ADD_LIST' 
+})
 
 export function initializeStore (initialState = initialState) {
   return createStore(reducer, initialState, composeWithDevTools())

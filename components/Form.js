@@ -1,15 +1,11 @@
 import React, {Component} from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { changeText } from '../store'
 
 class Form extends Component {
   handleChange = e => {
+    const { changeText } = this.props
     changeText(e.target.value)
-  }
-
-  submit() {
-    alert('submit')
   }
 
   render () {
@@ -23,16 +19,13 @@ class Form extends Component {
   }
 }
 
-function mapStateToProps (state) {
-  const {inputText} = state
-  return {inputText}
-}
+const mapStateToProps = state => ({
+  inputText: state.inputText
+})
 
-function mapDispatchToProps (dispatch) {
-  return {
-    changeText: inputText => dispatch(changeText(inputText))
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  changeText: text => dispatch(changeText(text))
+})
 
 export default connect(
   mapStateToProps,
