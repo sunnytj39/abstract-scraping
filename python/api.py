@@ -37,13 +37,15 @@ def get_title():
     
     assert 'web performance' in driver.title
     
-    list = []
+    title = []
+    url = []
 
     for a in driver.find_elements_by_css_selector('h3 > a'):
-        #url = a.get_attribute('href')
-        list.append(a.text)
+        title.append(a.text)
+        url.append(a.get_attribute('href'))
 
-    return make_response(jsonify(list))
+    result = [title, url]
+    return make_response(jsonify(result))
 
 # エラーハンドリング
 @api.errorhandler(404)
