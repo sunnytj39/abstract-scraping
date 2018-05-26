@@ -8,9 +8,9 @@ Using Microsoft Azure Cognitive Service Text Translation API.
 
 ## Usage
 
-`npm run dev`
+`$ npm run dev`
 
-`cd python && python3 api.py`
+`$ cd python && python3 api.py`
 
 Next: localhost:3000
 
