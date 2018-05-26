@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
-import { changeText, addTitleList, addAbstract } from '../store'
+import { changeText, addTitleList, addAbstract, loading } from '../store'
+import styled from 'styled-components'
 
 class Form extends Component {
   constructor(props) {
@@ -16,6 +17,8 @@ class Form extends Component {
 
   async getTitle(e) {
     e.preventDefault()
+    const { addTitleList, addAbstract, loading } = this.props
+    loading(true)
     console.log('fetch start')
     const response = await fetch('http://localhost:3001/get_title', {
       method: 'POST',
@@ -29,7 +32,7 @@ class Form extends Component {
     })
     const json = await response.json()
     console.log(json)
-    const { addTitleList, addAbstract } = this.props
+    loading(false)
     addTitleList(json)
     addAbstract('')
   }
@@ -38,13 +41,44 @@ class Form extends Component {
   render () {
     const { inputText } = this.props
     return (
-      <form>
+      <Wrapper>
         <input type="text" value={inputText} onChange={this.handleChange} />
-        <button onClick={this.getTitle}>search</button>
-      </form>
+        <div onClick={this.getTitle}>search</div>
+      </Wrapper>
     )
   }
 }
+
+const Wrapper = styled.div`
+  width: 50%;
+  margin: 0 auto;
+  input {
+    height: 32px;
+    background-color: transparent;
+    border: solid 2px #666;
+    font-size: 16px;
+    color: #666;
+    outline: none;
+    border-radius: 3px;
+    padding: 1px 10px;
+    margin: 0 10px;
+    width: 65%;
+  }
+  div {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.3em 1em;
+    text-decoration: none;
+    color: #666;
+    border: solid 2px #666;
+    border-radius: 3px;
+    transition: .4s;
+  }
+  div:hover {
+    background: #666;
+    color: white;
+  }
+`;
 
 const mapStateToProps = state => ({
   inputText: state.inputText
@@ -53,7 +87,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   changeText: text => dispatch(changeText(text)),
   addTitleList: list => dispatch(addTitleList(list)),
-  addAbstract: abstract => dispatch(addAbstract(addAbstract))
+  addAbstract: abstract => dispatch(addAbstract(addAbstract)),
+  loading: flag => dispatch(loading(flag))
 })
 
 export default connect(
