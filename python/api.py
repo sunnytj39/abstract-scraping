@@ -7,6 +7,10 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import http.client, urllib.parse, uuid, json
 from flask_cors import CORS
+from consts import KEY
+import http.client, urllib.parse, uuid, json
+import ssl 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # Flaskクラスのインスタンスを作成
 # __name__は現在のファイルのモジュール名
@@ -20,7 +24,7 @@ def test():
     return make_response(jsonify(result))
 
 # title,urlの取得
-@api.route('/get_title', methods=['GET', 'POST'])
+@api.route('/get_title', methods=['POST'])
 def get_title():
     options = Options()
     options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
@@ -44,11 +48,59 @@ def get_title():
     url = []
 
     for a in driver.find_elements_by_css_selector('h3 > a'):
-        title.append(a.text)
-        url.append(a.get_attribute('href'))
+        if 'patent' in a.get_attribute('href'):
+            title.append(a.text)
+            url.append(a.get_attribute('href'))
 
     result = [title, url]
     return make_response(jsonify(result))
+
+@api.route('/get_abstract', methods=['GET', 'POST'])
+def get_abstract():
+    options = Options()
+    options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
+    options.add_argument('--headless')
+        
+    driver = webdriver.Chrome('./chromedriver', chrome_options=options)
+    driver.get(request.json)
+
+    data = driver.page_source.encode('utf-8')
+    soup = BeautifulSoup(data, "html.parser")
+
+    abstract = soup.find('div', class_='abstract')
+    print(abstract.string)
+
+    driver.quit()
+
+    subscriptionKey = KEY
+    
+    host = 'api.cognitive.microsofttranslator.com'
+    path = '/translate?api-version=3.0'
+    
+    params = "&to=ja";
+    
+    def translate (content):
+    
+        headers = {
+            'Ocp-Apim-Subscription-Key': subscriptionKey,
+            'Content-type': 'application/json',
+            'X-ClientTraceId': str(uuid.uuid4())
+        }
+    
+        conn = http.client.HTTPSConnection(host)
+        conn.request ("POST", path + params, content, headers)
+        response = conn.getresponse ()
+        return response.read ()
+    
+    requestBody = [{
+        'Text' : abstract.string,
+    }]
+    content = json.dumps(requestBody, ensure_ascii=False).encode('utf-8')
+    result = translate (content)
+    
+    output = json.dumps(json.loads(result), indent=4, ensure_ascii=False)
+    return make_response(result)
+
 
 # エラーハンドリング
 @api.errorhandler(404)

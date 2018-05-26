@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
-import { changeText, addTitleList } from '../store'
+import { changeText, addTitleList, addAbstract } from '../store'
 
 class Form extends Component {
   constructor(props) {
@@ -29,8 +29,9 @@ class Form extends Component {
     })
     const json = await response.json()
     console.log(json)
-    const { addTitleList } = this.props
+    const { addTitleList, addAbstract } = this.props
     addTitleList(json)
+    addAbstract('')
   }
   
 
@@ -51,7 +52,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   changeText: text => dispatch(changeText(text)),
-  addTitleList: list => dispatch(addTitleList(list))
+  addTitleList: list => dispatch(addTitleList(list)),
+  addAbstract: abstract => dispatch(addAbstract(addAbstract))
 })
 
 export default connect(

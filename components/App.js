@@ -1,12 +1,14 @@
 import {connect} from 'react-redux'
 import Form from './Form'
 import List from './List'
+import Abstract from './Abstract'
 
 const App = ({ lastUpdate, light }) => {
   return (
     <div>
       <Form />
       <List />
+      <Abstract />
     </div>
   )
 }
