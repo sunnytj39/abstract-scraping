@@ -1,6 +1,7 @@
 python/consts.py
 python/scraping.py
 python/translate.py
+python/__pycache__
 node_modules
 package-lock.json
 .next
