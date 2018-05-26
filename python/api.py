@@ -58,13 +58,17 @@ def get_title():
 
     while True:
         for a in driver.find_elements_by_css_selector('h3 > a'):
-            # URLにrfcが含まれていないか 
-            if 'rfc' not in a.get_attribute('href'):
-                title.append(a.text)
-                url.append(a.get_attribute('href'))
+            if 'rfc' not in a.get_attribute('href') and \
+                    'pdf' not in a.get_attribute('href') and \
+                    'book' not in a.get_attribute('href') and \
+                    'springer' not in a.get_attribute('href') and \
+                    'jstor' not in a.get_attribute('href') and \
+                    'acm.org' not in a.get_attribute('href'):
+                        title.append(a.text)
+                        url.append(a.get_attribute('href'))
 
         # タイトルを5つ以上取得できたらループを抜ける
-        if len(title) > 5:
+        if len(title) > 10:
             break
         else:
             # 次のページへ移動
@@ -83,6 +87,7 @@ def get_abstract():
     options.add_argument('--headless')
         
     driver = webdriver.Chrome('./chromedriver', chrome_options=options)
+    driver.implicitly_wait(10)
     driver.get(request.json)
 
     # ページのソースを取得
@@ -90,11 +95,17 @@ def get_abstract():
     soup = BeautifulSoup(data, "html.parser")
 
     # クラス名にabstractが入っている要素を取得
-    abstract = soup.find(class_=re.compile(".*abstract.*"))
+    abstract = soup.find('div', class_=re.compile(".*abstract.*"))
 
     # 要素が見つからない場合空のオブジェクトを返却
     if abstract is None:
-        return make_response(jsonify())
+        abstract = soup.find('p', class_=re.compile(".*abstract.*"))
+        if abstract is None:
+            abstract = soup.find('section', class_=re.compile(".*abstract.*"))
+            if abstract is None:
+                abstract = soup.find(id=re.compile(".*abstract.*"))
+                if abstract is None:
+                    return make_response(jsonify())
 
     driver.quit()
 
