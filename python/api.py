@@ -6,10 +6,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import http.client, urllib.parse, uuid, json
+from flask_cors import CORS
 
 # Flaskクラスのインスタンスを作成
 # __name__は現在のファイルのモジュール名
 api = Flask(__name__)
+CORS(api)
 
 # GETの実装
 @api.route('/get', methods=['GET'])
@@ -17,7 +19,7 @@ def get_user():
     result = { "greeting": 'hello flask' }
     return make_response(jsonify(result))
 
-# titleの取得
+# title,urlの取得
 @api.route('/get_title', methods=['GET'])
 def get_title():
     options = Options()
