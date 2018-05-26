@@ -1,4 +1,6 @@
 python/consts.py
+python/scraping.py
+python/translate.py
 node_modules
 package-lock.json
 .next
