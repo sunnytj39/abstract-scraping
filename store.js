@@ -3,7 +3,7 @@ import {composeWithDevTools } from 'redux-devtools-extension'
 
 const initialState = {
   inputText: 'initial text',
-  list: ['hello', 'react' ,'redux']
+  titleList: [[]],
 }
 
 // REDUCERS
@@ -13,22 +13,23 @@ export const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         inputText: action.inputText
       })
-    case 'ADD_LIST':
+    case 'ADD_TITLE_LIST':
       return Object.assign({}, state, {
-        list: action.list
+        titleList: action.titleList
       })
     default: return state
   }
 }
 
 // ACTIONS
-export const changeText = text => ({ 
+export const changeText = inputText => ({ 
   type: 'CHANGE_TEXT',
-  inputText: text
+  inputText: inputText
 })
 
-export const addList = () => ({ 
-  type: 'ADD_LIST' 
+export const addTitleList = titleList => ({ 
+  type: 'ADD_TITLE_LIST',
+  titleList: titleList
 })
 
 export function initializeStore (initialState = initialState) {

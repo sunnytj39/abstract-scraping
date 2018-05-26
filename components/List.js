@@ -1,15 +1,15 @@
 import { connect } from 'react-redux'
 
-const List = ({list}) => (
+const List = ({titleList}) => (
   <div>
-    {Object.keys(list).map(key =>
-      <div key={key}>{list[key]}</div>
+    {Object.keys(titleList[0]).map(key =>
+      <div key={key}> 「{titleList[0][key]}」</div>
     )}
   </div>
 )
 
 const mapStateToProps = state => ({
-  list: state.list
+  titleList: state.titleList
 })
 
 export default connect(mapStateToProps)(List)

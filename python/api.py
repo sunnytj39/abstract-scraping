@@ -1,5 +1,5 @@
 # 必要なモジュールの読み込み
-from flask import Flask, jsonify, abort, make_response
+from flask import Flask, jsonify, abort, make_response, request
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -15,12 +15,12 @@ CORS(api)
 
 # GETの実装
 @api.route('/get', methods=['GET'])
-def get_user():
+def test():
     result = { "greeting": 'hello flask' }
     return make_response(jsonify(result))
 
 # title,urlの取得
-@api.route('/get_title', methods=['GET'])
+@api.route('/get_title', methods=['GET', 'POST'])
 def get_title():
     options = Options()
     options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
@@ -30,14 +30,15 @@ def get_title():
     driver.get('https://scholar.google.co.jp')
     
     assert 'Google Scholar' in driver.title
+
+    print(request.json)
+    keyword = request.json
     
     input_elem = driver.find_element_by_xpath('//*[@id="gs_hdr_tsi"]')
-    input_elem.send_keys('web performance')
+    input_elem.send_keys(keyword)
     input_elem.send_keys(Keys.RETURN)
     
     time.sleep(1)
-    
-    assert 'web performance' in driver.title
     
     title = []
     url = []
