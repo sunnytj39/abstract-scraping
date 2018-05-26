@@ -11,6 +11,8 @@ from consts import KEY
 import http.client, urllib.parse, uuid, json
 import ssl 
 import re
+from fake_useragent import UserAgent
+from selenium.webdriver.support.ui import WebDriverWait
 
 # sslを有効化
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -27,13 +29,19 @@ def get_title():
     options = Options()
     options.binary_location = '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary'
     options.add_argument('--headless')
+    ua = UserAgent()
+    user_agent = ua.random
+    options.add_argument(f'user-agent={user_agent}')
+
         
     # ドライバーの作成
     driver = webdriver.Chrome('./chromedriver', chrome_options=options)
+    driver.implicitly_wait(10)
 
     # google scholarに移動
     driver.get('https://scholar.google.co.jp')
     
+    # google scholarにいることの確認
     assert 'Google Scholar' in driver.title
 
     # POSTされたキーワードを取得
@@ -43,8 +51,6 @@ def get_title():
     input_elem = driver.find_element_by_xpath('//*[@id="gs_hdr_tsi"]')
     input_elem.send_keys(keyword)
     input_elem.send_keys(Keys.RETURN)
-
-    time.sleep(1)
     
     # 検索結果のタイトルとその遷移先URLを格納
     title = []
@@ -56,11 +62,19 @@ def get_title():
             if 'rfc' not in a.get_attribute('href'):
                 title.append(a.text)
                 url.append(a.get_attribute('href'))
+
+        # タイトルを5つ以上取得できたらループを抜ける
         if len(title) > 5:
             break
         else:
-            next_button = driver.find_element_by_class_name("gs_btnPR")
-            print(next_button)
+            driver.save_screenshot('title-fail.png')
+            try:
+                WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="gs_nm"]/button[2]'))
+            finally:
+                driver.quit()
+
+            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            driver.find_element_by_class_name("gs_btnPR").click()
 
     driver.quit()
 
@@ -128,6 +142,6 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 # ファイルをスクリプトとして実行した際に
-# ホスト0.0.0.0, ポート3001番でサーバーを起動
+# ホスト0.0.0.0, ポート3001番でサーバーを起動 debug=Trueでデバッグモード
 if __name__ == '__main__':
     api.run(host='0.0.0.0', port=3001)

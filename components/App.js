@@ -6,6 +6,7 @@ import Abstract from './Abstract'
 const App = ({ lastUpdate, light }) => {
   return (
     <div>
+      <h1>Abstract Scraping</h1>
       <Form />
       <List />
       <Abstract />
