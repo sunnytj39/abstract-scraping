@@ -67,14 +67,8 @@ def get_title():
         if len(title) > 5:
             break
         else:
-            driver.save_screenshot('title-fail.png')
-            try:
-                WebDriverWait(driver, 10).until(lambda x: x.find_element_by_xpath('//*[@id="gs_nm"]/button[2]'))
-            finally:
-                driver.quit()
-
-            # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            driver.find_element_by_class_name("gs_btnPR").click()
+            elem = driver.find_element_by_xpath('//*[@id="gs_nm"]/button[2]')
+            driver.execute_script("arguments[0].click();", elem)
 
     driver.quit()
 
