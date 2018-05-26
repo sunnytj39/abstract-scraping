@@ -67,6 +67,7 @@ def get_title():
         if len(title) > 5:
             break
         else:
+            # 次のページへ移動
             elem = driver.find_element_by_xpath('//*[@id="gs_nm"]/button[2]')
             driver.execute_script("arguments[0].click();", elem)
 
