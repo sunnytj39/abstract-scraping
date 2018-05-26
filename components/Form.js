@@ -40,7 +40,7 @@ class Form extends Component {
     return (
       <form>
         <input type="text" value={inputText} onChange={this.handleChange} />
-        <button onClick={this.getTitle}>submit</button>
+        <button onClick={this.getTitle}>search</button>
       </form>
     )
   }

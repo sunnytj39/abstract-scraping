@@ -22,9 +22,12 @@ class List extends Component {
       },
     })
     const json = await response.json()
-    console.log(json[0]['translations'][0]['text'])
     const { addAbstract } = this.props
-    addAbstract(json[0]['translations'][0]['text'])
+    if(json.length == null) {
+      addAbstract('abstractが見つかりませんでした')
+    } else {
+      addAbstract(json[0]['translations'][0]['text'])
+    }
   }
 
   render () {

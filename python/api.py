@@ -11,6 +11,7 @@ from consts import KEY
 import http.client, urllib.parse, uuid, json
 import ssl 
 ssl._create_default_https_context = ssl._create_unverified_context
+import re
 
 # Flaskクラスのインスタンスを作成
 # __name__は現在のファイルのモジュール名
@@ -48,7 +49,8 @@ def get_title():
     url = []
 
     for a in driver.find_elements_by_css_selector('h3 > a'):
-        if 'patent' in a.get_attribute('href'):
+        # URLにpatentが含まれるか 
+        #if 'patent' in a.get_attribute('href'):
             title.append(a.text)
             url.append(a.get_attribute('href'))
 
@@ -67,8 +69,12 @@ def get_abstract():
     data = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(data, "html.parser")
 
-    abstract = soup.find('div', class_='abstract')
-    print(abstract.string)
+    #abstract = soup.find('div', class_='abstract')
+    abstract = soup.find(class_=re.compile(".*abstract.*"))
+    print(abstract)
+    if abstract is None:
+        print('NONE!!!!!!!!!!!!!!!!!!!!')
+        return make_response(jsonify())
 
     driver.quit()
 
@@ -93,7 +99,7 @@ def get_abstract():
         return response.read ()
     
     requestBody = [{
-        'Text' : abstract.string,
+        'Text' : abstract.text,
     }]
     content = json.dumps(requestBody, ensure_ascii=False).encode('utf-8')
     result = translate (content)
